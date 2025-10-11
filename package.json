@@ -9,7 +9,12 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:up": "docker compose -f docker-compose.dev.yml up -d",
+    "db:down": "docker compose -f docker-compose.dev.yml down",
+    "db:logs": "docker compose -f docker-compose.dev.yml logs -f postgres",
+    "db:ps": "docker compose -f docker-compose.dev.yml ps",
+    "db:restart": "pnpm run db:down && pnpm run db:up"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.9.0",
