@@ -40,15 +40,14 @@ npm run preview
 
 ```
 
-
 ## Docker Compose ENV vars
+
 ```bash
 # env variables used by docker-compose
 DB_USER=<Database user name>
 DB_PASSWORD=<Database password>
 DB_PORT=<Database port>
 DB_DATABASE=<Database to use>
-
 
 ```
 
