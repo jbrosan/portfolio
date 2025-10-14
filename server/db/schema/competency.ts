@@ -1,11 +1,13 @@
 import { relations } from "drizzle-orm";
 import { pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { user } from "./auth";
 import { career } from "./career";
 import { competencyCategory } from "./competency-category";
 
 export const competency = pgTable("competency", {
   id: uuid().primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => user.id),
   categoryId: uuid()
     .notNull()
     .references(() => competencyCategory.id, { onDelete: "restrict", onUpdate: "cascade" }),

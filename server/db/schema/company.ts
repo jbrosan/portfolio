@@ -2,8 +2,11 @@ import { relations } from "drizzle-orm";
 // server/db/schema/companies.ts
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { user } from "./auth";
+
 export const company = pgTable("company", {
   id: uuid().primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => user.id),
   name: text().notNull(),
   slug: text().notNull().unique(), // set by DB trigger on INSERT
   logoUrl: text(),

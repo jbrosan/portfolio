@@ -1,13 +1,14 @@
 // server/db/schema/careers.ts
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { user } from "./auth";
 import { company } from "./company";
 
 export const career = pgTable("career", {
   id: uuid().primaryKey().defaultRandom(),
   // Keep user_id as a plain column (Better-Auth will create its own users table).
   // I'll add an FK later once Better-Auth is in.
-  userId: uuid("user_id"),
+  userId: uuid("user_id").notNull().references(() => user.id),
   slug: text("slug").notNull().unique(),
   companyId: uuid("company_id").notNull().references(() => company.id),
   position: text("position").notNull(), // e.g., "PROFESSIONAL DEVELOPMENT"

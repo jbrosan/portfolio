@@ -1,12 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import env from "./app/utils/env";
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+
 const dbUrl = `postgresql://${env.DB_USER}:${env.DB_PASSWORD}@${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`;
 // Get the directory of the current file (project root)
 const currentDir = dirname(fileURLToPath(import.meta.url));
-
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -29,6 +30,6 @@ export default defineNuxtConfig({
     },
   },
   alias: {
-    '#db': join(currentDir, './server/db'),
+    "#db": join(currentDir, "./server/db"),
   },
 });
