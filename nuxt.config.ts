@@ -31,5 +31,6 @@ export default defineNuxtConfig({
   },
   alias: {
     "#db": join(currentDir, "./server/db"),
+    "#server": join(currentDir, "./server"),
   },
 });
