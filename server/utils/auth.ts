@@ -27,7 +27,6 @@ export const auth = betterAuth({
       scopes: ["email", "public_profile", "user_age_range", "user_birthday"],
     },
 
-
   },
   // 2. Email/Password Provider
   emailAndPassword: {
@@ -36,8 +35,8 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      trustedProviders: ["google", "github", "facebook"]
-    }
+      trustedProviders: ["google", "github", "facebook"],
+    },
   },
   advanced: {
     database: {
