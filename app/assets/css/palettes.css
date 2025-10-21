@@ -1,0 +1,67 @@
+/* Base variables (fallbacks) */
+:root {
+  --wrapper-bg: #e7edf5;
+  --border: #1f2937;
+  --sidebar-bg: #d9e7ff;
+  --sidebar-header-bg: #c8dbff;
+  --main-bg: #ffffff;
+  --main-header-bg: #f7f7fb;
+  --shadow-alpha: 0.15;
+}
+
+/* OCEAN */
+:root[data-palette="ocean"] {
+  --wrapper-bg: #e7edf5;
+  --border: #1f2937;
+  --sidebar-bg: #d9e7ff;
+  --sidebar-header-bg: #c8dbff;
+  --main-bg: #ffffff;
+  --main-header-bg: #f7f7fb;
+}
+.dark[data-palette="ocean"] {
+  --wrapper-bg: #000000;
+  --border: #2a2a2a;
+  --sidebar-bg: #0f2544;
+  --sidebar-header-bg: #123058;
+  --main-bg: #0e1a2b;
+  --main-header-bg: #12213a;
+  --shadow-alpha: 0.25;
+}
+
+/* MIDNIGHT (darker panels) */
+:root[data-palette="midnight"] {
+  --wrapper-bg: #e9eef7;
+  --border: #243040;
+  --sidebar-bg: #e0e8fb;
+  --sidebar-header-bg: #d4def7;
+  --main-bg: #ffffff;
+  --main-header-bg: #f6f8fc;
+}
+.dark[data-palette="midnight"] {
+  --wrapper-bg: #000000;
+  --border: #2b3344;
+  --sidebar-bg: #0b1a30;
+  --sidebar-header-bg: #0e2240;
+  --main-bg: #0a1324;
+  --main-header-bg: #0d1a2f;
+  --shadow-alpha: 0.28;
+}
+
+/* SLATE (more neutral) */
+:root[data-palette="slate"] {
+  --wrapper-bg: #eef1f5;
+  --border: #2b3441;
+  --sidebar-bg: #f3f5f8;
+  --sidebar-header-bg: #e9edf2;
+  --main-bg: #ffffff;
+  --main-header-bg: #f7f8fa;
+}
+.dark[data-palette="slate"] {
+  --wrapper-bg: #000000;
+  --border: #2c2c30;
+  --sidebar-bg: #111418;
+  --sidebar-header-bg: #171a20;
+  --main-bg: #0f1216;
+  --main-header-bg: #14181e;
+  --shadow-alpha: 0.22;
+}

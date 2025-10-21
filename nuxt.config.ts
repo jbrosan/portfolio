@@ -22,8 +22,10 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/scripts",
     "@nuxt/ui",
+    "motion-v/nuxt",
+    "nuxt-ripple",
   ],
-  css: ["@/assets/css/main.css"],
+  css: ["@/assets/css/main.css", "@/assets/css/palettes.css"],
   eslint: {
     config: {
       standalone: false,
@@ -32,5 +34,10 @@ export default defineNuxtConfig({
   alias: {
     "#db": join(currentDir, "./server/db"),
     "#server": join(currentDir, "./server"),
+  },
+  colorMode: {
+    preference: "dark",
+    fallback: "light",
+
   },
 });

@@ -7,7 +7,8 @@ definePageMeta({ layout: false });
 
 const schema = z.object({
   email: z.email("Valid email required"),
-  password: z.string().min(1, "Password required"),
+  password: z.string("Password is required").min(8, "Must be at least 8 characters"),
+
 });
 
 const form = reactive({ email: "", password: "" });

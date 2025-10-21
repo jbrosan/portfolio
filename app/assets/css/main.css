@@ -1,2 +1,40 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+/* prose */
+.prose { @apply text-justify leading-relaxed; }
+
+/* ---------- Dark Mode Circle Transition ---------- */
+
+/* Store click position as CSS variables for the animation */
+:root {
+  --circle-x: 50%;
+  --circle-y: 50%;
+  --circle-radius: 0px;
+}
+
+/* Disable default animations */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* Old view stays in place */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* New view animates in with circle clip-path */
+::view-transition-new(root) {
+  z-index: 2;
+  animation: circle-wipe 0.5s ease-out forwards;
+}
+
+@keyframes circle-wipe {
+  0% {
+    clip-path: circle(0px at var(--circle-x, 50%) var(--circle-y, 50%));
+  }
+  100% {
+    clip-path: circle(var(--circle-radius, 2000px) at var(--circle-x, 50%) var(--circle-y, 50%));
+  }
+}
