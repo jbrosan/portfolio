@@ -6,28 +6,42 @@
 
 /* ---------- Dark Mode Circle Transition ---------- */
 
-/* Store click position as CSS variables for the animation */
+/* Be explicit: allow root snapshots */
+:root { view-transition-name: root; }
+
+/* Click position variables */
 :root {
   --circle-x: 50%;
   --circle-y: 50%;
   --circle-radius: 0px;
 }
 
-/* Disable default animations */
+/* Put the transition layers above app chrome */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646; /* over z-50 headers etc. */
+  pointer-events: none; /* never eat clicks */
 }
 
-/* Old view stays in place */
+/* Old frame sits underneath */
 ::view-transition-old(root) {
-  z-index: 1;
+  animation: none;
+  z-index: 2147483645;
 }
 
-/* New view animates in with circle clip-path */
+/* New frame animates in */
 ::view-transition-new(root) {
-  z-index: 2;
   animation: circle-wipe 0.5s ease-out forwards;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root),
+  ::view-transition-old(root) {
+    animation: none !important;
+  }
 }
 
 @keyframes circle-wipe {

@@ -1,55 +1,69 @@
 <script setup lang="ts">
+import { UButton } from "#components";
+
 const colorMode = useColorMode();
 
-// Handle color mode toggle with view transition
-function toggleColorMode(event: MouseEvent) {
-  console.log("Button clicked!");
-  console.log("startViewTransition available:", !!document.startViewTransition);
+function toggleColorMode(e: MouseEvent | PointerEvent | KeyboardEvent) {
+  if (import.meta.server)
+    return;
 
-  if (!document.startViewTransition) {
-    // Fallback for browsers without View Transitions API
-    return; // Let UColorModeButton handle it normally
+  // Flip immediately if user prefers reduced motion
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+    return;
   }
 
-  // Prevent default behavior and stop event propagation
-  event.preventDefault();
-  event.stopPropagation();
+  // Safely detect support (don’t detach the method)
+  const hasVT = typeof (document as any).startViewTransition === "function";
 
-  // Get click position
-  const x = event.clientX;
-  const y = event.clientY;
+  // Determine click position; fall back to center for keyboard triggers
+  let x = window.innerWidth / 2;
+  let y = window.innerHeight / 2;
+  if ("clientX" in e && typeof e.clientX === "number") {
+    x = e.clientX;
+    y = e.clientY;
+  }
 
-  console.log("Click position:", x, y);
+  const next = colorMode.value === "dark" ? "light" : "dark";
 
-  // Calculate the radius needed to cover the whole viewport
+  if (!hasVT) {
+    // No View Transitions support → just toggle
+    colorMode.preference = next;
+    return;
+  }
+
+  // Compute circle radius
   const endRadius = Math.hypot(
     Math.max(x, window.innerWidth - x),
     Math.max(y, window.innerHeight - y),
   );
 
-  console.log("End radius:", endRadius);
+  // Set CSS vars for the keyframes
+  const root = document.documentElement;
+  root.style.setProperty("--circle-x", `${x}px`);
+  root.style.setProperty("--circle-y", `${y}px`);
+  root.style.setProperty("--circle-radius", `${endRadius}px`)
 
-  // Set CSS variables for the animation
-  document.documentElement.style.setProperty("--circle-x", `${x}px`);
-  document.documentElement.style.setProperty("--circle-y", `${y}px`);
-  document.documentElement.style.setProperty("--circle-radius", `${endRadius}px`);
-
-  const newMode = colorMode.value === "dark" ? "light" : "dark";
-
-  console.log("Starting transition to:", newMode);
-
-  // Start the view transition
-  document.startViewTransition(() => {
-    console.log("Inside transition callback");
-    colorMode.preference = newMode;
+  // IMPORTANT: call with `document` bound
+  ;(document as any).startViewTransition.call(document, () => {
+    colorMode.preference = next;
   });
 }
 </script>
 
 <template>
-  <UColorModeButton
-    size="sm"
-    class="rounded-full"
-    @click="toggleColorMode"
-  />
+  <ClientOnly>
+    <UButton
+      size="sm"
+      color="neutral"
+      variant="ghost"
+      :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
+      aria-label="Toggle color mode"
+      :aria-pressed="colorMode.value === 'dark'"
+      class="rounded-full"
+      @click="toggleColorMode"
+      @keyup.enter="toggleColorMode"
+      @keyup.space.prevent="toggleColorMode"
+    />
+  </ClientOnly>
 </template>
