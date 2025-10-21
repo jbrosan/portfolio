@@ -19,6 +19,7 @@
     "db:generate": "drizzle-kit generate",
     "db:generate:named": "drizzle-kit generate --name",
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:migrate:runtime": "node server/scripts/migrate.mjs",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
