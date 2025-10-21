@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-definePageMeta({ layout: "admin" });
+definePageMeta({
+  layout: "admin",
+  title: "Admin Dashboard",
+});
+
+useHead({
+  title: "Dale Waugh · Admin Dashboard · Portfolio",
+});
 </script>
 
 <template>

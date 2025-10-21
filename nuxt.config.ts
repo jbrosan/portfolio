@@ -40,4 +40,10 @@ export default defineNuxtConfig({
     fallback: "light",
 
   },
+  plugins: ["~/plugins/strip-facebook-hash.client"],
+  app: {
+    head: {
+      title: "Dale Waugh · Portfolio",
+    },
+  },
 });
