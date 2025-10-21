@@ -2,12 +2,16 @@
 @import "@nuxt/ui";
 
 /* prose */
-.prose { @apply text-justify leading-relaxed; }
+.prose {
+  @apply text-justify leading-relaxed;
+}
 
 /* ---------- Dark Mode Circle Transition ---------- */
 
 /* Be explicit: allow root snapshots */
-:root { view-transition-name: root; }
+:root {
+  view-transition-name: root;
+}
 
 /* Click position variables */
 :root {

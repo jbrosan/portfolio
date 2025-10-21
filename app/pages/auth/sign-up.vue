@@ -1,26 +1,33 @@
-<!-- /app/pages/auth/signup.vue -->
 <script setup lang="ts">
-import { z } from "zod";
+import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
 
-import { authClient } from "@/utils/auth-client"; // NOTE: if srcDir: 'app', use this path
+import * as z from "zod";
+
+import { authClient } from "@/utils/auth-client";
 
 definePageMeta({ layout: false });
 
+const toast = useToast();
+
+const fields = ref<AuthFormField[]>([
+  { name: "name", label: "Full name", type: "text", placeholder: "Ada Lovelace", required: true },
+  { name: "email", label: "Email", type: "email", placeholder: "you@example.com", required: true },
+  { name: "password", label: "Password", type: "password", placeholder: "At least 8 characters", required: true },
+]);
+
 const schema = z.object({
-  name: z.string().min(1, "Required"),
+  name: z.string().min(1, "Name is required"),
   email: z.email("Valid email required"),
-  password: z.string().min(8, "Min 8 characters"),
+  password: z.string().min(8, "Must be at least 8 characters"),
 });
+type Schema = z.output<typeof schema>;
 
-type Form = z.infer<typeof schema>;
-
-const form = reactive<Form>({ name: "", email: "", password: "" });
 const pending = ref(false);
 const errorMsg = ref<string | null>(null);
 
-async function onSubmit() {
+async function onSubmit(ev: FormSubmitEvent<Schema>) {
   errorMsg.value = null;
-  const parsed = schema.safeParse(form);
+  const parsed = schema.safeParse(ev.data);
   if (!parsed.success) {
     errorMsg.value = parsed.error.issues[0]?.message ?? "Invalid input";
     return;
@@ -43,8 +50,8 @@ async function onSubmit() {
   await navigateTo("/");
 }
 
-function oauth(provider: "google" | "facebook"): void {
-  void authClient.signIn.social({
+function oauth(provider: "google" | "facebook") {
+  return authClient.signIn.social({
     provider,
     callbackURL: "/",
     errorCallbackURL: "/auth/login?oauth=error",
@@ -53,96 +60,96 @@ function oauth(provider: "google" | "facebook"): void {
 </script>
 
 <template>
-  <div class="min-h-screen grid place-items-center bg-neutral-50">
-    <div class="w-full max-w-sm rounded-2xl bg-white shadow p-6">
-      <h1 class="text-2xl font-semibold tracking-tight">
-        Create account
-      </h1>
-      <p class="text-sm text-neutral-500 mt-1">
-        It only takes a moment
+  <div class="flex flex-col items-center justify-center gap-4 p-4">
+    <UPageCard class="w-full max-w-md">
+      <UAuthForm
+        :schema="schema"
+        title="Create account"
+        description="It only takes a moment."
+        icon="i-lucide-user-plus"
+        :fields="fields"
+        class="max-w-md"
+        :loading="pending"
+        @submit="onSubmit"
+      />
+      <p v-if="errorMsg" class="mt-2 text-sm text-red-600">
+        {{ errorMsg }}
       </p>
 
-      <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
-        <div>
-          <label class="block text-sm font-medium mb-2">Name</label>
-          <UInput
-            v-model="form.name"
-            size="lg"
-            placeholder="Ada Lovelace"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm text-neutral-700 mb-2">Email</label>
-          <UInput
-            v-model="form.email"
-            size="lg"
-            type="email"
-            placeholder="you@example.com"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm text-neutral-700 mb-2">Password</label>
-          <UInput
-            v-model="form.password"
-            size="lg"
-            type="password"
-            placeholder="••••••••"
-          />
-          <p class="text-xs text-neutral-500 mt-1">
-            At least 8 characters.
-          </p>
-        </div>
-
-        <div v-if="errorMsg" class="text-sm text-red-600">
-          {{ errorMsg }}
-        </div>
-
-        <UButton
-          type="submit"
-          size="lg"
-          class="w-full"
-          :loading="pending"
-        >
-          Create account
-        </UButton>
-      </form>
-
+      <!-- Divider -->
       <div class="my-6 flex items-center gap-3">
         <div class="h-px bg-neutral-200 w-full" />
         <span class="text-xs text-neutral-500">or</span>
         <div class="h-px bg-neutral-200 w-full" />
       </div>
 
+      <!-- Custom provider buttons with perfect alignment -->
+      <!-- Replace just the social buttons block -->
       <div class="grid gap-3">
         <UButton
           variant="outline"
+          color="neutral"
           size="lg"
-          class="w-full"
-          @click="oauth('google')"
+          class="w-full justify-center"
+          @click="() => { toast.add({ title: 'Google', description: 'Continue with Google' }); oauth('google'); }"
         >
-          <span class="i-simple-icons-google mr-2" aria-hidden="true" />
-          Continue with Google
+          <span class="grid w-full grid-cols-[1.25rem_1fr_1.25rem] items-center gap-3">
+            <UIcon name="i-simple-icons-google" class="w-5 h-5 justify-self-start shrink-0" />
+            <span class="text-center">Continue with Google</span>
+            <span class="w-5 h-5 justify-self-end" aria-hidden="true" />
+          </span>
         </UButton>
 
         <UButton
           variant="outline"
+          color="neutral"
           size="lg"
-          class="w-full"
-          @click="oauth('facebook')"
+          class="w-full justify-center"
+          @click="() => { toast.add({ title: 'Facebook', description: 'Continue with Facebook' }); oauth('facebook'); }"
         >
-          <span class="i-simple-icons-facebook mr-2" aria-hidden="true" />
-          Continue with Facebook
+          <span class="grid w-full grid-cols-[1.25rem_1fr_1.25rem] items-center gap-3">
+            <UIcon name="i-simple-icons-facebook" class="w-5 h-5 justify-self-start shrink-0" />
+            <span class="text-center">Continue with Facebook</span>
+            <span class="w-5 h-5 justify-self-end" aria-hidden="true" />
+          </span>
         </UButton>
       </div>
 
-      <p class="text-sm text-neutral-600 mt-6 text-center">
+      <p class="mt-6 text-sm text-neutral-600 text-center">
         Already have an account?
-        <NuxtLink to="/auth/login" class="font-medium underline underline-offset-4">
+        <NuxtLink to="/auth/sign-in" class="font-medium underline underline-offset-4">
           Sign in
         </NuxtLink>
       </p>
-    </div>
+    </UPageCard>
   </div>
 </template>
+
+<style scoped>
+/* 3-column grid: [icon | centered label | spacer] */
+.social-btn {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr 1.25rem; /* keep these equal for perfect balance */
+  align-items: center;
+  width: 100%;
+  gap: 0.75rem; /* equals Tailwind gap-3 */
+}
+/* Force identical icon box so different logos occupy same space */
+.icon {
+  display: inline-block;
+  width: 1.25rem; /* 20px */
+  height: 1.25rem; /* 20px */
+  justify-self: start;
+}
+/* Center the label in the middle column */
+.label {
+  text-align: center;
+  justify-self: center;
+}
+/* Right-side spacer matches icon width to keep label centered */
+.spacer {
+  width: 1.25rem;
+  height: 1.25rem;
+  justify-self: end;
+}
+</style>

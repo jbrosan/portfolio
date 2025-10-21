@@ -31,6 +31,12 @@ export const auth = betterAuth({
   // 2. Email/Password Provider
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+  },
+  user: {
+    changeEmail: {
+      enabled: true,
+    },
   },
   account: {
     accountLinking: {

@@ -32,4 +32,8 @@ export const navLinks: NavigationMenuItem[] = [{
   label: "Publications",
   icon: "i-lucide-user",
   to: "/publications",
+}, {
+  label: "Account",
+  icon: "i-lucide-account-cog",
+  to: "/account",
 }];
