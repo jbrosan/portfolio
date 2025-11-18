@@ -18,8 +18,10 @@ const EnvSchema = z.object({
   FACEBOOK_CLIENT_SECRET: z.string(),
   ADMIN_EMAIL: z.email(),
   ADMIN_NAME: z.string().optional(),
-  DB_RESET_ON_START: z.string(),
   ALLOW_DB_RESET: z.string(),
+  MIGRATE_ON_START: z.string(),
+  SEED_ON_START: z.string(),
+  DB_RESET_ON_START: z.string(),
 
 });
 
