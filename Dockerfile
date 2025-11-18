@@ -24,7 +24,7 @@ ENV HOST=0.0.0.0
 
 # Install CA certs + curl for Coolify healthcheck
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl \
+  && apt-get install -y --no-install-recommends ca-certificates curl wget \
   && rm -rf /var/lib/apt/lists/*
 
 # Only production deps
