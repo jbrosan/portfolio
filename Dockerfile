@@ -2,10 +2,9 @@
 FROM node:24-slim AS builder
 WORKDIR /app
 
-RUN apk add --no-cache curl
-
 # Minimal CA bundle for HTTPS fetches during npm installs
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 # Install prod+dev deps with lockfile for deterministic builds
@@ -21,10 +20,11 @@ FROM node:24-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-
 ENV HOST=0.0.0.0
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+# Install CA certs + curl for Coolify healthcheck
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Only production deps
