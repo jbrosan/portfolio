@@ -8,18 +8,31 @@ const { DATABASE_URL, NODE_ENV, ALLOW_DB_RESET } = process.env;
 
 if (!DATABASE_URL) {
     console.error("DATABASE_URL is not set");
-    process.exit(1);
+    process.exit(1); // this *is* a real error
 }
 
-// Hard safety guard: require explicit flag and disallow in production
-if (NODE_ENV === "production" || ALLOW_DB_RESET !== "true") {
+const isProd = NODE_ENV === "production";
+const allowReset = ALLOW_DB_RESET === "true";
+
+// Safety guard:
+// - In production: only reset if ALLOW_DB_RESET="true"
+// - In non-prod: only reset if ALLOW_DB_RESET="true"
+// In *both* cases, if not allowed, we just skip and exit(0)
+if (!allowReset) {
     console.error(
-        `Refusing to reset DB. NODE_ENV=${NODE_ENV}, ALLOW_DB_RESET=${ALLOW_DB_RESET}`,
+        `Skipping DB reset: ALLOW_DB_RESET must be "true" (NODE_ENV=${NODE_ENV}, ALLOW_DB_RESET=${ALLOW_DB_RESET})`,
     );
-    process.exit(1);
+    process.exit(0); // not an error, just a no-op
 }
 
-console.log("⚠ Resetting database schemas…");
+if (isProd) {
+    console.error(
+        "⚠ WARNING: Running DB reset in NODE_ENV=\"production\" because ALLOW_DB_RESET=\"true\"",
+    );
+}
+else {
+    console.log("⚠ Resetting database schemas…");
+}
 
 const pool = new pg.Pool({
     connectionString: DATABASE_URL,
@@ -31,7 +44,6 @@ const client = await pool.connect();
 try {
     await client.query("BEGIN");
 
-    // Adjust schemas as needed: public/auth/drizzle/etc.
     await client.query(`
     DROP SCHEMA IF EXISTS auth CASCADE;
     DROP SCHEMA IF EXISTS public CASCADE;

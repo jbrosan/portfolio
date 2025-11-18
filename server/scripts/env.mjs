@@ -4,14 +4,14 @@ import { z } from "zod";
 
 /**
  * Keep this minimal and runtime-safe.
- * If you need more vars later, add them here.
+ * If I need more vars later, add them here.
  */
 const EnvSchema = z.object({
     // Required for both migrate & seed
     DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
 
     // Only used by seed; optional here and validated in seed logic if needed
-    SEED_USER_ID: z.string().uuid().optional(),
+    SEED_USER_ID: z.uuid().optional(),
 
     // Optional: switchable strictness (if you want)
     NODE_ENV: z.string().optional(),
