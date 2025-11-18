@@ -19,7 +19,7 @@ const EnvSchema = z.object({
   ADMIN_EMAIL: z.email(),
   ADMIN_NAME: z.string().optional(),
   DB_RESET_ON_START: z.string(),
-  ALLOW_DB_RESET: z.boolean(),
+  ALLOW_DB_RESET: z.string(),
 
 });
 
