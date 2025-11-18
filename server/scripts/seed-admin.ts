@@ -1,18 +1,26 @@
 // server/scripts/seed-admin.ts
 
+/* eslint-disable node/no-process-env */
 /* eslint-disable no-console */
 
 import "dotenv/config";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 
-import env from "../../app/utils/env";
 import { db } from "../db/client";
 import { user } from "../db/schema";
 
-async function main() {
-    const adminEmail = env.ADMIN_EMAIL;
-    const adminName = env.ADMIN_NAME ?? "Administrator";
+// Minimal env schema just for this script
+const SeedEnvSchema = z.object({
+    ADMIN_EMAIL: z.string().email(),
+    ADMIN_NAME: z.string().optional(),
+});
 
+const seedEnv = SeedEnvSchema.parse(process.env);
+const adminEmail = seedEnv.ADMIN_EMAIL;
+const adminName = seedEnv.ADMIN_NAME ?? "Administrator";
+
+async function main() {
     // 1) See if this email already exists
     const existing = await db
         .select({ id: user.id, role: user.role })
