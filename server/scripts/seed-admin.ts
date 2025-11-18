@@ -12,7 +12,7 @@ import { user } from "../db/schema";
 
 // Minimal env schema just for this script
 const SeedEnvSchema = z.object({
-    ADMIN_EMAIL: z.string().email(),
+    ADMIN_EMAIL: z.email(),
     ADMIN_NAME: z.string().optional(),
 });
 

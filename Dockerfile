@@ -22,7 +22,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 
-# Install CA certs + curl for Coolify healthcheck
+# Install CA certs + curl/wget for Coolify healthcheck
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates curl wget \
   && rm -rf /var/lib/apt/lists/*
@@ -31,12 +31,12 @@ RUN apt-get update \
 COPY --from=builder /app/package.json /app/package-lock.json* ./
 RUN npm ci --omit=dev
 
-# Copy app output + migrations + migration script
+# Copy app output + FULL db folder (client + schema + migrations) + scripts
 COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/server/db/migrations ./server/db/migrations
+COPY --from=builder /app/server/db ./server/db
 COPY --from=builder /app/server/scripts ./server/scripts
 
-# Entrypoint to run migrations first, then launch Nuxt
+# Entrypoint to run migrations/seeds first, then launch Nuxt
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh
 
