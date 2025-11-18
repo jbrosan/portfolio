@@ -1,7 +1,7 @@
 import { db } from "#db/client";
-import { career } from "#db/schema";
+import { user } from "#db/schema";
 
 export default defineEventHandler(async (_event) => {
-  const results = await db.select().from(career);
+  const results = await db.select().from(user);
   return results;
 });
