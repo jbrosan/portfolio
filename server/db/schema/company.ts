@@ -19,6 +19,19 @@ export const company = pgTable("company", {
   parentCompanyId: uuid(),
   createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdBy: uuid("created_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
 });
 
 export const companyRelation = relations(company, ({ one }) => ({

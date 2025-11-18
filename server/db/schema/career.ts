@@ -19,4 +19,17 @@ export const career = pgTable("career", {
   companyOverview: text("company_overview"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_At", { mode: "date" }).defaultNow().notNull(),
+  createdBy: uuid("created_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
 });

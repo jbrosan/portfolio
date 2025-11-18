@@ -16,6 +16,10 @@ const EnvSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   FACEBOOK_CLIENT_ID: z.string(),
   FACEBOOK_CLIENT_SECRET: z.string(),
+  ADMIN_EMAIL: z.email(),
+  ADMIN_NAME: z.string().optional(),
+  DB_RESET_ON_START: z.string(),
+  ALLOW_DB_RESET: z.boolean(),
 
 });
 

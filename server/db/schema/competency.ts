@@ -15,6 +15,20 @@ export const competency = pgTable("competency", {
   slug: text().notNull().unique(),
   createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdBy: uuid("created_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+
 });
 
 export const careerCompetencyLink = pgTable("career_competency", {

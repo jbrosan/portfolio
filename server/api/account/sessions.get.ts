@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event: H3Event) => {
   const authSession = await auth.api.getSession(event);
+  console.log("Auth Session:", authSession);
   if (!authSession?.user) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }

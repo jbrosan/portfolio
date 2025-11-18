@@ -8,45 +8,56 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+
     "db:up": "docker compose -f docker-compose.dev.yml up -d",
     "db:down": "docker compose -f docker-compose.dev.yml down",
     "db:down:flush": "docker compose -f docker-compose.dev.yml down -v",
     "db:logs": "docker compose -f docker-compose.dev.yml logs -f postgres",
     "db:ps": "docker compose -f docker-compose.dev.yml ps",
-    "db:restart": "npm run db:down && pnpm run db:up",
-    "db:generate": "drizzle-kit generate",
-    "db:generate:named": "drizzle-kit generate --name",
+    "db:restart": "npm run db:down && npm run db:up",
+
+    "db:seed:admin": "tsx server/scripts/seed-admin.ts",
+
+    "db:seed": "node -r dotenv/config server/scripts/seed.mjs",
+
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
+    "db:generate:named": "drizzle-kit generate --name --config=drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
-    "db:migrate:runtime": "node server/scripts/migrate.mjs",
-    "db:studio": "drizzle-kit studio"
+
+    "db:migrate:runtime": "node -r dotenv/config server/scripts/migrate.mjs",
+
+    "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
+    "dev:clean": "bash -c 'npm run db:down:flush && npm run db:up && sleep 5 && npm run db:migrate && npm run db:seed:admin && npm run db:seed'"
+
   },
   "dependencies": {
-    "@nuxt/eslint": "^1.9.0",
-    "@nuxt/image": "^1.11.0",
+    "@nuxt/eslint": "^1.10.0",
+    "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^0.13.0",
-    "@nuxt/ui": "^4.0.1",
+    "@nuxt/ui": "^4.1.0",
     "@unhead/vue": "^2.0.19",
-    "@vueuse/core": "^13.9.0",
-    "@vueuse/nuxt": "^13.9.0",
-    "better-auth": "^1.3.28",
-    "drizzle-orm": "^0.44.6",
-    "motion-v": "^1.7.3",
-    "nuxt": "^4.1.3",
+    "@vueuse/core": "^14.0.0",
+    "@vueuse/nuxt": "^14.0.0",
+    "better-auth": "^1.3.34",
+    "drizzle-orm": "^0.44.7",
+    "motion-v": "^1.7.4",
+    "nuxt": "^4.2.1",
     "nuxt-ripple": "^0.0.8",
     "pg": "^8.16.3",
     "typescript": "^5.9.3",
-    "vue": "^3.5.22",
+    "vue": "^3.5.24",
     "vue-router": "^4.6.3",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.0.0",
+    "@antfu/eslint-config": "^6.2.0",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/pg": "^8.15.5",
-    "drizzle-kit": "^0.31.5",
-    "eslint": "^9.38.0",
+    "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.7",
+    "eslint": "^9.39.1",
     "eslint-plugin-format": "^1.0.2",
     "tsx": "^4.20.6"
   }

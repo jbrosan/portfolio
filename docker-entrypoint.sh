@@ -1,8 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "→ Running database migrations"
-node server/scripts/migrate.mjs
+echo "→ NODE_ENV=${NODE_ENV:-unset}"
+echo "→ DATABASE_URL=${DATABASE_URL:+set}"
+
+# Optional: dangerous reset, only for dev/staging
+if [ "${DB_RESET_ON_START:-false}" = "true" ]; then
+  echo "⚠ WARNING: DB_RESET_ON_START=true – resetting database schema"
+  node server/scripts/reset-db.mjs
+fi
+
+# Run migrations (recommended: default = true)
+if [ "${MIGRATE_ON_START:-true}" = "true" ]; then
+  echo "→ Running database migrations"
+  node server/scripts/migrate.mjs
+else
+  echo "→ Skipping migrations (MIGRATE_ON_START=false)"
+fi
+
+# Optional seeding
+if [ "${SEED_ON_START:-false}" = "true" ]; then
+  echo "→ Seeding database"
+  node server/scripts/seed.mjs
+else
+  echo "→ Skipping seed (SEED_ON_START not true)"
+fi
 
 echo "→ Starting Nuxt"
 exec "$@"

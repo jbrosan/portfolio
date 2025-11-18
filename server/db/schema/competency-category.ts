@@ -12,6 +12,19 @@ export const competencyCategory = pgTable("competency_category", {
   sort: integer().default(0).notNull(),
   createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdBy: uuid("created_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+
+  updatedBy: uuid("updated_by")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
 });
 
 export const competencyCategoriesRelation = relations(competencyCategory, ({ many }) => ({

@@ -2,6 +2,7 @@
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 import env from "@/utils/env";
 
@@ -44,6 +45,9 @@ export const auth = betterAuth({
       trustedProviders: ["google", "github", "facebook"],
     },
   },
+  plugins: [
+    admin(),
+  ],
   advanced: {
     database: {
       generateId: false,
