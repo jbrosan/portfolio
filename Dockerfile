@@ -2,6 +2,8 @@
 FROM node:24-slim AS builder
 WORKDIR /app
 
+RUN apk add --no-cache curl
+
 # Minimal CA bundle for HTTPS fetches during npm installs
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
