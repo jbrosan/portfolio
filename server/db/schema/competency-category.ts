@@ -10,8 +10,8 @@ export const competencyCategory = pgTable("competency_category", {
   name: text().notNull().unique(),
   slug: text().notNull().unique(),
   sort: integer().default(0).notNull(),
-  createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => user.id, {

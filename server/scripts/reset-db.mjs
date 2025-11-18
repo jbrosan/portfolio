@@ -1,6 +1,6 @@
 // server/scripts/reset-db.mjs
 /* eslint-disable no-console */
-
+import "dotenv/config";
 import pg from "pg";
 
 // eslint-disable-next-line node/no-process-env
@@ -14,15 +14,13 @@ if (!DATABASE_URL) {
 const isProd = NODE_ENV === "production";
 const allowReset = ALLOW_DB_RESET === "true";
 
-// Safety guard:
-// - In production: only reset if ALLOW_DB_RESET="true"
-// - In non-prod: only reset if ALLOW_DB_RESET="true"
-// In *both* cases, if not allowed, we just skip and exit(0)
+// Safety guard: only reset when ALLOW_DB_RESET="true"
+// (both in prod and non-prod)
 if (!allowReset) {
     console.error(
         `Skipping DB reset: ALLOW_DB_RESET must be "true" (NODE_ENV=${NODE_ENV}, ALLOW_DB_RESET=${ALLOW_DB_RESET})`,
     );
-    process.exit(0); // not an error, just a no-op
+    process.exit(0); // no-op, not an error
 }
 
 if (isProd) {
@@ -31,7 +29,7 @@ if (isProd) {
     );
 }
 else {
-    console.log("⚠ Resetting database schemas…");
+    console.log("⚠ Resetting database schema 'public'…");
 }
 
 const pool = new pg.Pool({
@@ -45,11 +43,13 @@ try {
     await client.query("BEGIN");
 
     await client.query(`
-    DROP SCHEMA IF EXISTS auth CASCADE;
     DROP SCHEMA IF EXISTS public CASCADE;
     CREATE SCHEMA public;
-    CREATE SCHEMA auth;
   `);
+
+    await client.query(`
+    DROP SCHEMA IF EXISTS drizzle CASCADE;
+   `);
 
     await client.query("COMMIT");
     console.log("✔ Database reset complete");

@@ -17,8 +17,8 @@ export const company = pgTable("company", {
   location: text(),
   overview: text(),
   parentCompanyId: uuid(),
-  createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => user.id, {

@@ -8,13 +8,13 @@ import { competencyCategory } from "./competency-category";
 export const competency = pgTable("competency", {
   id: uuid().primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().references(() => user.id),
-  categoryId: uuid()
+  categoryId: uuid("category_id")
     .notNull()
     .references(() => competencyCategory.id, { onDelete: "restrict", onUpdate: "cascade" }),
   name: text().notNull(),
   slug: text().notNull().unique(),
-  createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => user.id, {
