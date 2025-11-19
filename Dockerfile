@@ -31,8 +31,9 @@ RUN apt-get update \
 COPY --from=builder /app/package.json /app/package-lock.json* ./
 RUN npm ci --omit=dev
 
-# Copy app output + FULL db folder (client + schema + migrations) + scripts
+# Copy Nuxt output, app code (for app/utils/env), db folder, and scripts
 COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/app ./app
 COPY --from=builder /app/server/db ./server/db
 COPY --from=builder /app/server/scripts ./server/scripts
 
