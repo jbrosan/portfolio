@@ -22,6 +22,12 @@ const EnvSchema = z.object({
   MIGRATE_ON_START: z.string(),
   SEED_ON_START: z.string(),
   DB_RESET_ON_START: z.string(),
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.string(),
+  SMTP_SECURE: z.string(),
+  SMTP_FROM: z.string(),
+  SMTP_USER: z.string(),
+  SMTP_PASS: z.string(),
 
 });
 

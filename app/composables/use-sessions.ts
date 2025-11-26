@@ -42,7 +42,7 @@ export function useSessions() {
     pending.value = true;
     error.value = null;
     try {
-      const data = await $fetch<SessionRow[]>("/api/account/sessions", {
+      const data = await $fetch<SessionRow[]>("/api/account/sessions/me", {
         signal: controller.value.signal,
       });
       sessions.value = data ?? [];
