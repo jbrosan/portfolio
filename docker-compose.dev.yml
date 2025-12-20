@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:18
@@ -11,10 +9,13 @@ services:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_DATABASE:-portfolio_db}
+      # Optional, but makes the expected path explicit:
+      PGDATA: /var/lib/postgresql/18/data
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # ✅ Postgres 18+ expects the major-version subdir under here
+      - pgdata:/var/lib/postgresql
     healthcheck:
-      test: [CMD-SHELL, "pg_isready -U ${DB_USER:-postgres} -d ${DB_DATABASE:-portfolio_db}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_DATABASE:-portfolio_db}" ]
       interval: 5s
       timeout: 5s
       retries: 5
