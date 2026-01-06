@@ -29,7 +29,7 @@
     "@vueuse/nuxt": "^14.1.0",
     "better-auth": "^1.4.10",
     "drizzle-orm": "^0.45.1",
-    "motion-v": "^1.7.5",
+    "motion-v": "^1.7.6",
     "nodemailer": "^7.0.12",
     "nuxt": "^4.2.2",
     "nuxt-ripple": "^0.0.8",
