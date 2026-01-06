@@ -10,12 +10,6 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "db:up": "docker compose -f docker-compose.dev.yml up -d",
-    "db:down": "docker compose -f docker-compose.dev.yml down",
-    "db:down:flush": "docker compose -f docker-compose.dev.yml down -v",
-    "db:logs": "docker compose -f docker-compose.dev.yml logs -f postgres",
-    "db:ps": "docker compose -f docker-compose.dev.yml ps",
-    "db:restart": "npm run db:down && npm run db:up",
     "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
     "db:generate:named": "drizzle-kit generate --name --config=drizzle.config.ts",
     "db:reset": "node server/scripts/reset-db.mjs",
@@ -23,8 +17,7 @@
     "db:seed:admin": "tsx server/scripts/seed-admin.ts",
     "db:seed": "node -r dotenv/config server/scripts/seed.mjs",
     "db:migrate:runtime": "node -r dotenv/config server/scripts/migrate.mjs",
-    "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
-    "dev:clean": "bash -c 'npm run db:down:flush && npm run db:up && sleep 5 && npm run db:migrate && npm run db:seed:admin && npm run db:seed'"
+    "db:studio": "drizzle-kit studio --config=drizzle.config.ts"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.12.1",
