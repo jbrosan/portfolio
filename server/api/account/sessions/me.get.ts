@@ -4,18 +4,19 @@ import { toWebRequest } from "h3";
 
 export default defineEventHandler(async (event) => {
   const { headers } = toWebRequest(event); // WHATWG Headers
-  const session = await auth.api.getSession({ headers });
+  const sessionData = await auth.api.getSession({ headers });
 
-  if (!session) {
+  if (!sessionData) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }
 
+
   return {
-    user: session.user,
+    user: sessionData.user,
     session: {
-      token: session.session.token,
-      createdAt: session.session.createdAt,
-      expiresAt: session.session.expiresAt,
+      token: sessionData.session.token,
+      createdAt: sessionData.session.createdAt,
+      expiresAt: sessionData.session.expiresAt,
     },
   };
 });

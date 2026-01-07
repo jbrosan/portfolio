@@ -35,16 +35,17 @@ export function useSessions() {
   const controller = shallowRef<AbortController | null>(null);
 
   async function load() {
-    if (controller.value)
-      controller.value.abort();
+    if (controller.value) controller.value.abort();
     controller.value = new AbortController();
 
     pending.value = true;
     error.value = null;
+
     try {
-      const data = await $fetch<SessionRow[]>("/api/account/sessions/me", {
+      const data = await $fetch<SessionRow[]>("/api/account/sessions", {
         signal: controller.value.signal,
       });
+
       sessions.value = data ?? [];
     }
     catch (err) {
@@ -55,6 +56,7 @@ export function useSessions() {
       pending.value = false;
     }
   }
+
 
   async function revoke(token: string) {
     pending.value = true;

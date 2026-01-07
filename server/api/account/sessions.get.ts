@@ -1,14 +1,17 @@
 // server/api/account/sessions.get.ts
 import type { H3Event } from "h3";
-
+import { toWebRequest } from "h3";
 import { db } from "#db/client";
 import { session as sessionTable } from "#db/schema/auth";
 import { auth } from "#server/utils/auth";
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event: H3Event) => {
-  const authSession = await auth.api.getSession(event);
-  console.log("Auth Session:", authSession);
+  const { headers } = toWebRequest(event);
+  // const authSession = await auth.api.getSession(event);
+  const authSession = await auth.api.getSession({ headers })
+
+  // console.log("Auth Session:", authSession);
   if (!authSession?.user) {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }
@@ -20,8 +23,12 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const currentToken = authSession.session?.token ?? null;
 
+  console.log("ROWS: ", rows)
+
+
   return rows.map(s => ({
     token: s.token,
+    userId: s.userId,
     userAgent: s.userAgent ?? null,
     ipAddress: s.ipAddress ?? null,
     createdAt: new Date(s.createdAt).toISOString(),

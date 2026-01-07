@@ -30,7 +30,7 @@ const toast = useToast();
 
 onMounted(async () => {
   // Idiomatic useFetch with a generic & default to avoid {} type
-  const { data } = await useFetch<MeResponse>("/api/session/me", {
+  const { data } = await useFetch<MeResponse>("/api/sessions/me", {
     default: () => ({} as MeResponse),
     // no need to watch anything here; one-time fetch on mount
     watch: false,

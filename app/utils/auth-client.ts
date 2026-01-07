@@ -1,3 +1,4 @@
+// app/utils/auth-client.ts
 import { adminClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/vue";
 
