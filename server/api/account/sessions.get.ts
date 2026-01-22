@@ -1,15 +1,16 @@
 // server/api/account/sessions.get.ts
 import type { H3Event } from "h3";
-import { toWebRequest } from "h3";
+
 import { db } from "#db/client";
 import { session as sessionTable } from "#db/schema/auth";
 import { auth } from "#server/utils/auth";
 import { eq } from "drizzle-orm";
+import { toWebRequest } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
   const { headers } = toWebRequest(event);
   // const authSession = await auth.api.getSession(event);
-  const authSession = await auth.api.getSession({ headers })
+  const authSession = await auth.api.getSession({ headers });
 
   // console.log("Auth Session:", authSession);
   if (!authSession?.user) {
@@ -23,8 +24,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   const currentToken = authSession.session?.token ?? null;
 
-  console.log("ROWS: ", rows)
-
+  console.log("ROWS: ", rows);
 
   return rows.map(s => ({
     token: s.token,

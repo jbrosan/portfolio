@@ -12,9 +12,9 @@ const database = env.DB_DATABASE ?? "postgres";
 
 const url
   = env.DATABASE_URL
-  ?? `postgres://${encodeURIComponent(user)}:${encodeURIComponent(
-    password,
-  )}@${host}:${port}/${database}`;
+    ?? `postgres://${encodeURIComponent(user)}:${encodeURIComponent(
+      password,
+    )}@${host}:${port}/${database}`;
 
 if (!url) {
   throw new Error("Database credentials are missing. Check your .env.");

@@ -13,30 +13,30 @@ const __dirname = dirname(__filename);
 const { DATABASE_URL } = process.env;
 
 if (!DATABASE_URL) {
-    console.error("DATABASE_URL is not set");
-    process.exit(1);
+  console.error("DATABASE_URL is not set");
+  process.exit(1);
 }
 
 const pool = new pg.Pool({
-    connectionString: DATABASE_URL,
-    max: 1,
-    idleTimeoutMillis: 2000,
+  connectionString: DATABASE_URL,
+  max: 1,
+  idleTimeoutMillis: 2000,
 });
 
 const db = drizzle(pool);
 
 (async () => {
-    try {
-        const migrationsFolder = resolve(__dirname, "../db/migrations");
-        console.log(`→ Running Drizzle migrations from: ${migrationsFolder}`);
-        await migrate(db, { migrationsFolder });
-        console.log("✔ Migrations completed");
-    }
-    catch (err) {
-        console.error("✖ Migration failed:", err);
-        process.exit(1);
-    }
-    finally {
-        await pool.end();
-    }
+  try {
+    const migrationsFolder = resolve(__dirname, "../db/migrations");
+    console.log(`→ Running Drizzle migrations from: ${migrationsFolder}`);
+    await migrate(db, { migrationsFolder });
+    console.log("✔ Migrations completed");
+  }
+  catch (err) {
+    console.error("✖ Migration failed:", err);
+    process.exit(1);
+  }
+  finally {
+    await pool.end();
+  }
 })();

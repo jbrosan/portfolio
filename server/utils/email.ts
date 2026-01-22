@@ -19,9 +19,9 @@ function getTransporter(): nodemailer.Transporter {
 
   const hasAuth
     = typeof config.smtpUser === "string"
-    && config.smtpUser.length > 0
-    && typeof config.smtpPass === "string"
-    && config.smtpPass.length > 0;
+      && config.smtpUser.length > 0
+      && typeof config.smtpPass === "string"
+      && config.smtpPass.length > 0;
 
   transporter = nodemailer.createTransport({
     host: config.smtpHost as string,
@@ -29,11 +29,11 @@ function getTransporter(): nodemailer.Transporter {
     secure: Boolean(config.smtpSecure), // usually false for 587
     ...(hasAuth
       ? {
-        auth: {
-          user: config.smtpUser as string,
-          pass: config.smtpPass as string,
-        },
-      }
+          auth: {
+            user: config.smtpUser as string,
+            pass: config.smtpPass as string,
+          },
+        }
       : {}),
   });
 

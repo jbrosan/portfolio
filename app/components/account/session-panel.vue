@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
+
 import type { SessionRow } from "@/composables/use-sessions";
+
 import { useSessions } from "@/composables/use-sessions";
 import { authClient } from "@/utils/auth-client";
+
 const toast = useToast();
 const { sessions, load, revoke, revokeOthers, pending, error, currentSession } = useSessions();
 
@@ -22,7 +25,8 @@ const hasOtherSessions = computed(() =>
 onMounted(async () => {
   try {
     await load();
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     toast.add({
       title: "Failed to load sessions",
       description: (e as Error)?.message ?? String(e),
@@ -32,7 +36,8 @@ onMounted(async () => {
 });
 
 watch(error, (e) => {
-  if (!e) return;
+  if (!e)
+    return;
   toast.add({
     title: "Session error",
     description: (e as Error)?.message ?? String(e),
@@ -44,7 +49,8 @@ async function handleRevoke(token: string) {
   try {
     await revoke(token);
     toast.add({ title: "Session revoked", color: "success" });
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     toast.add({
       title: "Revoke failed",
       description: (e as Error)?.message ?? String(e),
@@ -57,7 +63,8 @@ async function handleRevokeOthers() {
   try {
     await revokeOthers();
     toast.add({ title: "Signed out of other sessions", color: "success" });
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     toast.add({
       title: "Sign out failed",
       description: (e as Error)?.message ?? String(e),
@@ -70,7 +77,8 @@ async function handleSignOutHere() {
   try {
     await authClient.signOut();
     await navigateTo("/auth/sign-in");
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     toast.add({
       title: "Sign out failed",
       description: (e as Error)?.message ?? String(e),
@@ -107,7 +115,11 @@ async function handleSignOutHere() {
       </div>
     </div>
 
-    <UTable :data="sessions" :columns="columns" :loading="pending">
+    <UTable
+      :data="sessions"
+      :columns="columns"
+      :loading="pending"
+    >
       <template #createdAt-cell="{ row }">
         {{ new Date(row.original.createdAt).toLocaleString() }}
       </template>

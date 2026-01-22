@@ -12,8 +12,8 @@ import { user } from "../db/schema";
 
 // Minimal env schema just for this script
 const SeedEnvSchema = z.object({
-    ADMIN_EMAIL: z.email(),
-    ADMIN_NAME: z.string().optional(),
+  ADMIN_EMAIL: z.email(),
+  ADMIN_NAME: z.string().optional(),
 });
 
 const seedEnv = SeedEnvSchema.parse(process.env);
@@ -21,40 +21,40 @@ const adminEmail = seedEnv.ADMIN_EMAIL;
 const adminName = seedEnv.ADMIN_NAME ?? "Administrator";
 
 async function main() {
-    // 1) See if this email already exists
-    const existing = await db
-        .select({ id: user.id, role: user.role })
-        .from(user)
-        .where(eq(user.email, adminEmail))
-        .limit(1);
+  // 1) See if this email already exists
+  const existing = await db
+    .select({ id: user.id, role: user.role })
+    .from(user)
+    .where(eq(user.email, adminEmail))
+    .limit(1);
 
-    if (existing.length > 0) {
-        const { id, role } = existing[0];
-        console.log(
-            `[seed-admin] User with email ${adminEmail} already exists (id=${id}, role=${role ?? "null"}). No changes made.`,
-        );
-        return;
-    }
-
-    // 2) Insert the admin user
-    const [inserted] = await db
-        .insert(user)
-        .values({
-            email: adminEmail,
-            name: adminName,
-            role: "admin",
-            emailVerified: true,
-        })
-        .returning({
-            id: user.id,
-        });
-
+  if (existing.length > 0) {
+    const { id, role } = existing[0];
     console.log(
-        `[seed-admin] Created admin user with email ${adminEmail} and id=${inserted.id}.`,
+      `[seed-admin] User with email ${adminEmail} already exists (id=${id}, role=${role ?? "null"}). No changes made.`,
     );
+    return;
+  }
+
+  // 2) Insert the admin user
+  const [inserted] = await db
+    .insert(user)
+    .values({
+      email: adminEmail,
+      name: adminName,
+      role: "admin",
+      emailVerified: true,
+    })
+    .returning({
+      id: user.id,
+    });
+
+  console.log(
+    `[seed-admin] Created admin user with email ${adminEmail} and id=${inserted.id}.`,
+  );
 }
 
 void main().catch((error) => {
-    console.error("[seed-admin] Failed:", error);
-    process.exit(1);
+  console.error("[seed-admin] Failed:", error);
+  process.exit(1);
 });

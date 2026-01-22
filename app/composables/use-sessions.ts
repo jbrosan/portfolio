@@ -35,7 +35,8 @@ export function useSessions() {
   const controller = shallowRef<AbortController | null>(null);
 
   async function load() {
-    if (controller.value) controller.value.abort();
+    if (controller.value)
+      controller.value.abort();
     controller.value = new AbortController();
 
     pending.value = true;
@@ -56,7 +57,6 @@ export function useSessions() {
       pending.value = false;
     }
   }
-
 
   async function revoke(token: string) {
     pending.value = true;
