@@ -6,33 +6,37 @@ import { session as sessionTable } from "#db/schema/auth";
 import { auth } from "#server/utils/auth";
 import { eq } from "drizzle-orm";
 import { toWebRequest } from "h3";
+import { requireAuth } from "~~/server/utils/require-auth";
 
-export default defineEventHandler(async (event: H3Event) => {
-  const { headers } = toWebRequest(event);
-  // const authSession = await auth.api.getSession(event);
-  const authSession = await auth.api.getSession({ headers });
+export default defineEventHandler({
+  onRequest: [requireAuth],
+  handler: async (event: H3Event) => {
+    const { headers } = toWebRequest(event);
+    // const authSession = await auth.api.getSession(event);
+    const authSession = await auth.api.getSession({ headers });
 
-  // console.log("Auth Session:", authSession);
-  if (!authSession?.user) {
-    throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
-  }
+    // console.log("Auth Session:", authSession);
+    if (!authSession?.user) {
+      throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
+    }
 
-  const rows = await db
-    .select()
-    .from(sessionTable)
-    .where(eq(sessionTable.userId, authSession.user.id));
+    const rows = await db
+      .select()
+      .from(sessionTable)
+      .where(eq(sessionTable.userId, authSession.user.id));
 
-  const currentToken = authSession.session?.token ?? null;
+    const currentToken = authSession.session?.token ?? null;
 
-  console.log("ROWS: ", rows);
+    console.log("ROWS: ", rows);
 
-  return rows.map(s => ({
-    token: s.token,
-    userId: s.userId,
-    userAgent: s.userAgent ?? null,
-    ipAddress: s.ipAddress ?? null,
-    createdAt: new Date(s.createdAt).toISOString(),
-    lastActiveAt: new Date(s.updatedAt ?? s.createdAt).toISOString(),
-    current: currentToken ? s.token === currentToken : false,
-  }));
+    return rows.map(s => ({
+      token: s.token,
+      userId: s.userId,
+      userAgent: s.userAgent ?? null,
+      ipAddress: s.ipAddress ?? null,
+      createdAt: new Date(s.createdAt).toISOString(),
+      lastActiveAt: new Date(s.updatedAt ?? s.createdAt).toISOString(),
+      current: currentToken ? s.token === currentToken : false,
+    }));
+  },
 });

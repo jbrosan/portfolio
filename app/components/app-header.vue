@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
+import SignInOut from "./account/sign-in-out.vue";
 
 defineProps<{
   links: NavigationMenuItem[];
@@ -18,6 +19,7 @@ defineProps<{
     }"
   >
     <template #list-trailing>
+      <SignInOut />
       <ClientOnly>
         <ColorModeButton />
       </ClientOnly>

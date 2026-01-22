@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
+import auth from "@/middleware/auth"
+
 import ChangePasswordForm from "@/components/account/change-password-form.vue";
 import DangerZone from "@/components/account/danger-zone.vue";
 import ProfileForm from "@/components/account/profile-form.vue";
 import SessionsPanel from "@/components/account/session-panel.vue";
 
-definePageMeta({ layout: "default", title: "Account Settings" });
+definePageMeta({ layout: "default", title: "Account Settings", middleware:[auth] });
 
 const tabs = [
   { value: "profile", label: "Profile" },

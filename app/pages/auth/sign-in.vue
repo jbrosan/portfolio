@@ -1,14 +1,13 @@
 <!-- /app/pages/auth/sign-in.vue -->
 <script setup lang="ts">
 import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
-
 import * as z from "zod";
-
 import { authClient } from "@/utils/auth-client";
 
 definePageMeta({ layout: false });
 
 const toast = useToast();
+const route = useRoute();
 
 const fields = ref<AuthFormField[]>([
   { name: "email", type: "email", label: "Email", placeholder: "Enter your email", required: true },
@@ -25,6 +24,23 @@ type Schema = z.output<typeof schema>;
 const pending = ref(false);
 const errorMsg = ref<string | null>(null);
 
+/**
+ * Only allow local, same-site paths to prevent open-redirects.
+ */
+function getSafeNext(): string {
+  const q = route.query.next;
+  if (typeof q !== "string") return "/";
+
+  // must be a relative path like "/account"
+  if (!q.startsWith("/")) return "/";
+  // block protocol-relative "//evil.com"
+  if (q.startsWith("//")) return "/";
+
+  return q;
+}
+
+const nextPath = computed(() => getSafeNext());
+
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   errorMsg.value = null;
 
@@ -38,7 +54,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   const { error } = await authClient.signIn.email({
     email: parsed.data.email,
     password: parsed.data.password,
-    callbackURL: "/",
+    callbackURL: nextPath.value, // ✅ use next
   });
   pending.value = false;
 
@@ -47,14 +63,15 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     return;
   }
 
-  await navigateTo("/");
+  // ✅ After successful login, go where the user intended
+  await navigateTo(nextPath.value);
 }
 
 function oauth(provider: "google" | "facebook") {
   return authClient.signIn.social({
     provider,
-    callbackURL: "/",
-    errorCallbackURL: "/auth/login?oauth=error",
+    callbackURL: nextPath.value, // ✅ use next
+    errorCallbackURL: `/auth/sign-in?oauth=error&next=${encodeURIComponent(nextPath.value)}`,
   });
 }
 </script>
@@ -77,14 +94,12 @@ function oauth(provider: "google" | "facebook") {
         {{ errorMsg }}
       </p>
 
-      <!-- Divider -->
       <div class="my-6 flex items-center gap-3">
         <div class="h-px bg-neutral-200 w-full" />
         <span class="text-xs text-neutral-500">or</span>
         <div class="h-px bg-neutral-200 w-full" />
       </div>
 
-      <!-- Social providers (aligned icons, centered labels) -->
       <div class="grid gap-3">
         <UButton
           variant="outline"
