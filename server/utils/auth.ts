@@ -7,6 +7,7 @@ import { admin } from "better-auth/plugins";
 import env from "@/utils/env";
 
 import { db } from "../db/client";
+import { resetPasswordEmailTemplate } from "./email-templates/reset-password";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -33,6 +34,19 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async (data) => {
+      const template = resetPasswordEmailTemplate({
+        resetUrl: data.url,
+
+      });
+
+      await sendEmail({
+        to: data.user.email,
+        subject: template.subject,
+        text: template.text,
+        html: template.html,
+      });
+    },
   },
   user: {
     changeEmail: {
@@ -50,7 +64,7 @@ export const auth = betterAuth({
   ],
   advanced: {
     database: {
-      generateId: false,
+      generateId: "uuid",
     },
   },
 });

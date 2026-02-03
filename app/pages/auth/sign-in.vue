@@ -18,6 +18,7 @@ const fields = ref<AuthFormField[]>([
 const schema = z.object({
   email: z.email("Valid email required"),
   password: z.string("Password is required").min(8, "Must be at least 8 characters"),
+  remember: z.boolean().optional(),
 });
 type Schema = z.output<typeof schema>;
 
@@ -50,10 +51,13 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     return;
   }
 
+  const rememberMe = parsed.data.remember ?? false;
+
   pending.value = true;
   const { error } = await authClient.signIn.email({
     email: parsed.data.email,
     password: parsed.data.password,
+    rememberMe,
     callbackURL: nextPath.value, // ✅ use next
   });
   pending.value = false;
@@ -79,6 +83,7 @@ function oauth(provider: "google" | "facebook") {
 <template>
   <div class="flex flex-col items-center justify-center gap-4 p-4">
     <UPageCard class="w-full max-w-md">
+      <h1 class="flex flex-col items-center justify-center">Dale Waugh's Portfolio</h1>
       <UAuthForm
         :schema="schema"
         title="Sign In"
@@ -89,6 +94,16 @@ function oauth(provider: "google" | "facebook") {
         :loading="pending"
         @submit="onSubmit"
       />
+
+      <div class="mt-2 text-right">
+        <NuxtLink
+          :to="`/auth/forgot-password?next=${encodeURIComponent(nextPath)}`"
+          class="text-sm text-primary-600 hover:underline"
+        >
+          Forgot your password?
+        </NuxtLink>
+
+      </div>
 
       <p v-if="errorMsg" class="mt-2 text-sm text-red-600">
         {{ errorMsg }}

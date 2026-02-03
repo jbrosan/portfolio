@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { authClient } from "~/utils/auth-client";
+import { useAuthMe } from "~/composables/use-auth-me";
 
-const loading = ref(true);
-const { data: session } = await authClient.useSession(useFetch);
-loading.value = false;
+const loading = ref(false);
 
-const handleAuthClick = async () => {
-  if (session.value) {
+const { data: me, refresh } = await useAuthMe();
+
+const isAuthed = computed(() => Boolean(me.value?.user?.id));
+
+async function handleAuthClick() {
+  if (isAuthed.value) {
     loading.value = true;
     try {
       await authClient.signOut();
+      await refresh(); // ✅ update header immediately
       await navigateTo("/");
     } finally {
       loading.value = false;
@@ -18,7 +22,7 @@ const handleAuthClick = async () => {
   }
 
   await navigateTo("/auth/sign-in");
-};
+}
 </script>
 
 <template>
@@ -28,6 +32,6 @@ const handleAuthClick = async () => {
     variant="ghost"
     @click="handleAuthClick"
   >
-    {{ session ? "Sign out" : "Sign in" }}
+    {{ isAuthed ? "Sign out" : "Sign in" }}
   </UButton>
 </template>
