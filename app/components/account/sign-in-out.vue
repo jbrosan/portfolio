@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { authClient } from "~/utils/auth-client";
-import { useAuthMe } from "~/composables/use-auth-me";
+import { useAuthState } from "~/composables/use-auth-state";
 
-const loading = ref(false);
+const { isAuthed, refreshMe, pending } = useAuthState();
 
-const { data: me, refresh } = await useAuthMe();
-
-const isAuthed = computed(() => Boolean(me.value?.user?.id));
+// always sync when the header appears
+onMounted(async () => {
+  await refreshMe();
+});
 
 async function handleAuthClick() {
   if (isAuthed.value) {
-    loading.value = true;
     try {
       await authClient.signOut();
-      await refresh(); // ✅ update header immediately
+      await refreshMe();
       await navigateTo("/");
     } finally {
-      loading.value = false;
+      // pending is managed by refreshMe()
     }
     return;
   }
@@ -27,7 +27,7 @@ async function handleAuthClick() {
 
 <template>
   <UButton
-    :loading="loading"
+    :loading="pending"
     color="neutral"
     variant="ghost"
     @click="handleAuthClick"

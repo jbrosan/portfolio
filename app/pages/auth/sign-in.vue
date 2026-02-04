@@ -9,6 +9,10 @@ definePageMeta({ layout: false });
 const toast = useToast();
 const route = useRoute();
 
+const { refreshMe } = useAuthState();
+
+
+
 const fields = ref<AuthFormField[]>([
   { name: "email", type: "email", label: "Email", placeholder: "Enter your email", required: true },
   { name: "password", label: "Password", type: "password", placeholder: "Enter your password", required: true },
@@ -68,6 +72,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   }
 
   // ✅ After successful login, go where the user intended
+  await refreshMe();
   await navigateTo(nextPath.value);
 }
 
