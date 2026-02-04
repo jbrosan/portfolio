@@ -3,6 +3,11 @@ set -euo pipefail
 
 echo "→ NODE_ENV=${NODE_ENV:-unset}"
 echo "→ DATABASE_URL=${DATABASE_URL:+set}"
+echo "→ DB_RESET_ON_START=${DB_RESET_ON_START:-false}"
+echo "→ MIGRATE_ON_START=${MIGRATE_ON_START:-true}"
+echo "→ SEED_ON_START=${SEED_ON_START:-false}"
+echo "→ ADMIN_EMAIL=${ADMIN_EMAIL:-unset}"
+echo "→ ALLOW_DB_RESET=${ALLOW_DB_RESET:-false}"
 
 # Optional: dangerous reset, only for dev/staging or intentional prod nukes
 if [ "${DB_RESET_ON_START:-false}" = "true" ]; then
@@ -23,10 +28,11 @@ if [ "${SEED_ON_START:-false}" = "true" ]; then
   # 1) Seed admin (idempotent)
   if [ -n "${ADMIN_EMAIL:-}" ]; then
     echo "→ Seeding admin user"
-    npx tsx server/scripts/seed-admin.ts
+    node server/scripts/seed-admin.mjs
   else
     echo "→ Skipping admin seed (ADMIN_EMAIL is not set)"
   fi
+
 
   # 2) Seed app data (competencies, categories, etc.)
   echo "→ Seeding database"
