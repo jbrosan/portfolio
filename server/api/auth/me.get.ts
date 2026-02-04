@@ -6,6 +6,9 @@ type SessionMe = {
     id: string;
     email: string;
     name?: string | null;
+    emailVerified?: boolean;
+    status?: "pending" | "active" | "disabled";
+    role?: "admin" | "member";
     roles?: string[];
     authorities?: string[];
   };
@@ -17,21 +20,27 @@ type SessionMe = {
 };
 
 export default defineEventHandler(async (event): Promise<SessionMe | null> => {
-  const result = await auth.api.getSession({
-    headers: event.headers,
-  });
-
+  const result = await auth.api.getSession({ headers: event.headers });
   if (!result?.user || !result?.session) return null;
 
-  // Map to your shape (and stringify dates if Better-Auth returns Date objects)
+  const u = result.user as {
+    emailVerified?: boolean;
+    status?: "pending" | "active" | "disabled";
+    role?: "admin" | "member";
+    roles?: string[];
+    authorities?: string[];
+  };
+
   return {
     user: {
       id: result.user.id,
       email: result.user.email,
       name: result.user.name ?? null,
-      // add these if you enrich user in customSession:
-      roles: (result.user as { roles?: string[] }).roles,
-      authorities: (result.user as { authorities?: string[] }).authorities,
+      emailVerified: u.emailVerified,
+      status: u.status,
+      role: u.role,
+      roles: u.roles,
+      authorities: u.authorities,
     },
     session: {
       token: result.session.token,

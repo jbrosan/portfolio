@@ -1,12 +1,23 @@
 // app/middleware/auth.ts
-import { authClient } from "@/utils/auth-client";
-
 export default defineNuxtRouteMiddleware(async (to) => {
-    // SSR-safe session lookup (Better Auth Nuxt integration)
-    const { data: session } = await authClient.useSession(useFetch);
+    // Public routes
+    if (to.path === "/" || to.path.startsWith("/auth")) return;
 
-    if (!session.value) {
-        // optional: preserve return URL
+    const { data } = await useFetch("/api/auth/me");
+    const me = data.value;
+
+    // Not logged in
+    if (!me?.user) {
         return navigateTo(`/auth/sign-in?next=${encodeURIComponent(to.fullPath)}`);
+    }
+
+    // Email not verified
+    if (!me.user.emailVerified) {
+        return navigateTo("/auth/verify-email");
+    }
+
+    // Account not approved
+    if (me.user.status !== "active") {
+        return navigateTo("/auth/pending");
     }
 });

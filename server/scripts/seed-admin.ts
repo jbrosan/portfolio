@@ -44,13 +44,14 @@ async function main() {
       name: adminName,
       role: "admin",
       emailVerified: true,
+      status: "active"
     })
     .returning({
       id: user.id,
     });
 
   console.log(
-    `[seed-admin] Created admin user with email ${adminEmail} and id=${inserted.id}.`,
+    `[seed-admin] Created admin user with email ${adminEmail} and id=${inserted?.id}.`,
   );
 }
 

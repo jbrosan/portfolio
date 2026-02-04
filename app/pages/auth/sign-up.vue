@@ -38,7 +38,7 @@ async function onSubmit(ev: FormSubmitEvent<Schema>) {
     name: parsed.data.name,
     email: parsed.data.email,
     password: parsed.data.password,
-    callbackURL: "/",
+    callbackURL: "/auth/verify-email",
   });
   pending.value = false;
 
@@ -47,7 +47,13 @@ async function onSubmit(ev: FormSubmitEvent<Schema>) {
     return;
   }
 
-  await navigateTo("/");
+  toast.add({
+    color: "success",
+    title: "Check your email",
+    description: "We sent you a verification link. You’ll need it to continue.",
+  });
+
+  await navigateTo("/auth/verify-email");
 }
 
 function oauth(provider: "google" | "facebook") {

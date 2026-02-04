@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-
+import auth from "@/middleware/auth"
+definePageMeta({ layout: "default", title: "Account Settings", middleware:[auth] });
 </script>
 
 <template>
