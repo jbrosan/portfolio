@@ -25,7 +25,8 @@ const EnvSchema = z.object({
   SMTP_HOST: z.string(),
   SMTP_PORT: z.string(),
   SMTP_SECURE: z.string(),
-  SMTP_FROM: z.string(),
+  SMTP_FROM_ADDRESS: z.string(),
+  SMTP_FROM_NAME: z.string(),
   SMTP_USER: z.string(),
   SMTP_PASS: z.string(),
 

@@ -39,10 +39,13 @@ function getTransporter(): nodemailer.Transporter {
   return transporter;
 }
 
-function toAsciiSafeName(input: string): string {
-  // Strip non-ASCII to avoid SMTP encoding issues.
-  // (If you want to allow unicode later, do it only in headers, not envelope.)
-  return input.replace(/[^\x20-\x7E]/g, "").trim();
+function extractEmailAddress(input: string): string {
+  // Supports:
+  // - "Name <email@domain>"
+  // - "email@domain"
+  const trimmed = input.trim();
+  const angle = trimmed.match(/<([^>]+)>/);
+  return (angle?.[1] ?? trimmed).trim();
 }
 
 export async function sendEmail(options: SendEmailOptions): Promise<void> {
@@ -56,13 +59,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
   // Fallback to smtpFrom if split vars aren't present
   const smtpFromRaw = String(config.smtpFrom ?? "").trim();
 
-  // Determine envelope-from address
-  const fromAddress =
-    fromAddressRaw ||
-    // If smtpFromRaw is like: Name <email@domain>
-    (smtpFromRaw.match(/<([^>]+)>/)?.[1]?.trim() ?? "") ||
-    // If smtpFromRaw is just an email
-    smtpFromRaw;
+  // ✅ Envelope-from address must be plain email (ASCII)
+  const fromAddress = extractEmailAddress(fromAddressRaw || smtpFromRaw);
 
   if (!fromAddress || !fromAddress.includes("@")) {
     throw new Error(
@@ -73,8 +71,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
     );
   }
 
-  // Header "From" (pretty name allowed, but we keep it ASCII-safe)
-  const fromName = toAsciiSafeName(fromNameRaw) || undefined;
+  // ✅ Header display name (can be unicode; Nodemailer will encode it)
+  const fromName = fromNameRaw.length > 0 ? fromNameRaw : undefined;
 
   console.log("[sendEmail] sending to", options.to);
   console.log(
@@ -83,14 +81,17 @@ export async function sendEmail(options: SendEmailOptions): Promise<void> {
   );
 
   await transport.sendMail({
-    // ✅ Force RFC-safe envelope sender (this fixes your Gmail 555)
+    // ✅ Envelope (what SMTP uses)
     envelope: {
       from: fromAddress,
       to: options.to,
     },
 
-    // ✅ Header From (safe + branded)
-    from: fromName ? { name: fromName, address: fromAddress } : fromAddress,
+    // ✅ Header (what the user sees)
+    // Only include `name` when defined to satisfy TS typings.
+    from: fromName
+      ? { name: fromName, address: fromAddress }
+      : fromAddress,
 
     to: options.to,
     subject: options.subject,

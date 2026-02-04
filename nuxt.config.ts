@@ -18,11 +18,13 @@ export default defineNuxtConfig({
     smtpPort: Number(env.SMTP_PORT ?? 587),
     smtpSecure: env.SMTP_SECURE === "true",
 
-    smtpFrom:
-      env.SMTP_FROM
-      || "\"Dale Waugh · Portfolio\" <no-reply@dwportfolio.me>",
+    // ✅ NEW: split "from"
+    smtpFromAddress: env.SMTP_FROM_ADDRESS || "no-reply@dwportfolio.me",
+    smtpFromName: env.SMTP_FROM_NAME || "Dale Waugh · Portfolio",
 
-    // OPTIONAL auth (used for local dev, omitted in prod if you want IP-only)
+    // Keep smtpFrom only as a fallback for old setups
+    smtpFrom: `"${env.SMTP_FROM_NAME}" <${env.SMTP_FROM_ADDRESS}>`,
+
     smtpUser: env.SMTP_USER || "",
     smtpPass: env.SMTP_PASS || "",
   },
