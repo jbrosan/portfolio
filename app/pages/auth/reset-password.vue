@@ -8,7 +8,7 @@ import * as z from "zod";
 import { authClient } from "@/utils/auth-client";
 
 definePageMeta({
-  layout: false,
+  layout: "default",
   title: "Reset password",
 });
 
@@ -121,7 +121,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordForm>) {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-950">
+  <div class="min-h-screen flex items-center justify-center">
     <UCard class="w-full max-w-md">
       <template #header>
         <div class="space-y-1">

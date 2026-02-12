@@ -4,7 +4,7 @@ import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
 import * as z from "zod";
 import { authClient } from "@/utils/auth-client";
 
-definePageMeta({ layout: false });
+definePageMeta({ layout: "default" });
 
 const toast = useToast();
 const route = useRoute();
