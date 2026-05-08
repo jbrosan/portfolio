@@ -36,8 +36,6 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-
-    // ✅ Password reset stays here
     sendResetPassword: async ({ user, url }: EmailTaskData) => {
       const tpl = resetPasswordEmailTemplate({ resetUrl: url });
 
@@ -50,7 +48,6 @@ export const auth = betterAuth({
     },
   },
 
-  // ✅ Email verification is configured HERE (top-level)
   emailVerification: {
     sendVerificationEmail: async ({ user, url }: EmailTaskData) => {
       const tpl = verifyEmailTemplate({ url });
@@ -66,6 +63,12 @@ export const auth = betterAuth({
 
   user: {
     changeEmail: { enabled: true },
+    additionalFields: {
+      status: {
+        type: "string",
+        input: false,
+      },
+    },
   },
 
   account: {
