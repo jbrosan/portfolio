@@ -1,50 +1,24 @@
-# --- Stage 1: Build ---
-FROM node:24-slim AS builder
+FROM oven/bun:1.4.1-slim AS build
 WORKDIR /app
 
-# Minimal CA bundle for HTTPS fetches during npm installs
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-# Install prod+dev deps with lockfile for deterministic builds
-COPY package.json package-lock.json* ./
-RUN npm ci
-
-# Build Nuxt
 COPY . .
-RUN npm run build
+RUN bun --bun run build
 
-# --- Stage 2: Runtime ---
-FROM node:24-slim AS runner
+FROM oven/bun:1.4.1-slim AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
+ENV PORT=3000
 
-# Install CA certs + curl/wget for Coolify healthcheck
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl wget \
-  && rm -rf /var/lib/apt/lists/*
+COPY --from=build /app/.output ./.output
 
-# Only production deps
-COPY --from=builder /app/package.json /app/package-lock.json* ./
-RUN npm ci --omit=dev
-
-# Copy Nuxt output, app code (for app/utils/env), db folder, and scripts
-COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/app ./app
-COPY --from=builder /app/server/db ./server/db
-COPY --from=builder /app/server/scripts ./server/scripts
-
-# Entrypoint to run migrations/seeds first, then launch Nuxt
-COPY docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh
-
-# Optional: run as non-root for a bit more safety
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
-
+USER bun
 EXPOSE 3000
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
-CMD ["node", ".output/server/index.mjs"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3   CMD ["bun", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+
+CMD ["bun", ".output/server/index.mjs"]
