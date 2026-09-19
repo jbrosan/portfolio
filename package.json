@@ -29,6 +29,9 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.5",
+    "@blocknote/core": "^0.54.2",
+    "@blocknote/react": "^0.54.2",
+    "@blocknote/shadcn": "^0.54.2",
     "@tailwindcss/vite": "latest",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
