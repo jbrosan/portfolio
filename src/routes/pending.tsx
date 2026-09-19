@@ -1,5 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
+import { LogoutButton } from "../components/logout-button";
+
 import { getSessionAccess } from "../lib/auth.functions";
 
 export const Route = createFileRoute("/pending")({
@@ -26,6 +28,9 @@ function PendingPage() {
 
   return (
     <main className="min-h-svh bg-background px-6 py-16 text-foreground">
+      <div className="fixed right-6 top-6 z-50">
+        <LogoutButton />
+      </div>
       <section className="mx-auto max-w-xl space-y-5 rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">
           Dale Waugh
