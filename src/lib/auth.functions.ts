@@ -19,6 +19,7 @@ export const getSessionAccess = createServerFn({ method: "GET" }).handler(async 
   const [access] = await db
     .select({
       status: user.status,
+      role: user.role,
     })
     .from(user)
     .where(eq(user.id, session.user.id))
@@ -32,5 +33,6 @@ export const getSessionAccess = createServerFn({ method: "GET" }).handler(async 
       emailVerified: session.user.emailVerified,
     },
     status: (access?.status ?? "pending") as AccessStatus,
+    role: access?.role ?? null,
   };
 });

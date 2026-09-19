@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PendingRouteImport } from './routes/pending'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProtectedPortfolioRouteImport } from './routes/_protected/portfolio'
+import { Route as ProtectedAdminAccessRouteImport } from './routes/_protected/admin/access'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -52,6 +53,11 @@ const ProtectedPortfolioRoute = ProtectedPortfolioRouteImport.update({
   path: '/portfolio',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedAdminAccessRoute = ProtectedAdminAccessRouteImport.update({
+  id: '/admin/access',
+  path: '/admin/access',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
   '/portfolio': typeof ProtectedPortfolioRoute
+  '/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
   '/portfolio': typeof ProtectedPortfolioRoute
+  '/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
   '/_protected/portfolio': typeof ProtectedPortfolioRoute
+  '/_protected/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/pending'
     | '/signup'
     | '/portfolio'
+    | '/admin/access'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/pending'
     | '/signup'
     | '/portfolio'
+    | '/admin/access'
     | '/api/auth/$'
   id:
     | '__root__'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/pending'
     | '/signup'
     | '/_protected/portfolio'
+    | '/_protected/admin/access'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedPortfolioRouteImport
       parentRoute: typeof ProtectedRoute
     }
+    '/_protected/admin/access': {
+      id: '/_protected/admin/access'
+      path: '/admin/access'
+      fullPath: '/admin/access'
+      preLoaderRoute: typeof ProtectedAdminAccessRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -191,10 +210,12 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedRouteChildren {
   ProtectedPortfolioRoute: typeof ProtectedPortfolioRoute
+  ProtectedAdminAccessRoute: typeof ProtectedAdminAccessRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedPortfolioRoute: ProtectedPortfolioRoute,
+  ProtectedAdminAccessRoute: ProtectedAdminAccessRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
