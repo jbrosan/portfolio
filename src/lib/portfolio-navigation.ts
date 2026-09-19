@@ -1,6 +1,6 @@
 export const portfolioNavigation = [
   { label: "Intro", to: "/", implemented: true },
-  { label: "Bio", to: "/bio", implemented: false },
+  { label: "Bio", to: "/bio", implemented: true },
   { label: "Career", to: "/career", implemented: false },
   { label: "Skills", to: "/skills", implemented: false },
   { label: "Projects", to: "/projects", implemented: false },

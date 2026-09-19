@@ -20,6 +20,7 @@ function HomePage() {
 
       <section className="mx-auto max-w-6xl py-10">
         <FeatureVideoCard
+          videoFit="cover"
           kicker="Dale Waugh"
           paragraphs={introParagraphs}
           title="Introduction"

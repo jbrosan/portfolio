@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_protected")({
 function ProtectedLayout() {
   const { access } = Route.useRouteContext();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const portfolioOwnsChrome = pathname === "/portfolio";
+  const portfolioOwnsChrome = pathname === "/portfolio" || pathname === "/bio";
 
   return (
     <>

@@ -15,6 +15,7 @@ import { Route as HealthzRouteImport } from './routes/healthz'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PendingRouteImport } from './routes/pending'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ProtectedBioRouteImport } from './routes/_protected/bio'
 import { Route as ProtectedPortfolioRouteImport } from './routes/_protected/portfolio'
 import { Route as ProtectedAdminAccessRouteImport } from './routes/_protected/admin/access'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -48,6 +49,11 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedBioRoute = ProtectedBioRouteImport.update({
+  id: '/bio',
+  path: '/bio',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const ProtectedPortfolioRoute = ProtectedPortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
+  '/bio': typeof ProtectedBioRoute
   '/portfolio': typeof ProtectedPortfolioRoute
   '/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
+  '/bio': typeof ProtectedBioRoute
   '/portfolio': typeof ProtectedPortfolioRoute
   '/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
   '/signup': typeof SignupRoute
+  '/_protected/bio': typeof ProtectedBioRoute
   '/_protected/portfolio': typeof ProtectedPortfolioRoute
   '/_protected/admin/access': typeof ProtectedAdminAccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pending'
     | '/signup'
+    | '/bio'
     | '/portfolio'
     | '/admin/access'
     | '/api/auth/$'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pending'
     | '/signup'
+    | '/bio'
     | '/portfolio'
     | '/admin/access'
     | '/api/auth/$'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pending'
     | '/signup'
+    | '/_protected/bio'
     | '/_protected/portfolio'
     | '/_protected/admin/access'
     | '/api/auth/$'
@@ -184,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/bio': {
+      id: '/_protected/bio'
+      path: '/bio'
+      fullPath: '/bio'
+      preLoaderRoute: typeof ProtectedBioRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_protected/portfolio': {
       id: '/_protected/portfolio'
       path: '/portfolio'
@@ -209,11 +228,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface ProtectedRouteChildren {
+  ProtectedBioRoute: typeof ProtectedBioRoute
   ProtectedPortfolioRoute: typeof ProtectedPortfolioRoute
   ProtectedAdminAccessRoute: typeof ProtectedAdminAccessRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedBioRoute: ProtectedBioRoute,
   ProtectedPortfolioRoute: ProtectedPortfolioRoute,
   ProtectedAdminAccessRoute: ProtectedAdminAccessRoute,
 }

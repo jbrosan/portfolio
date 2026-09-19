@@ -4,11 +4,19 @@ import { useRef, useState } from "react";
 type FeatureVideoCardProps = {
   title: string;
   kicker?: string;
-  paragraphs: readonly string[];
+  paragraphs?: readonly string[];
   videoSrc: string;
+  videoFit?: "cover" | "contain";
 };
 
-export function FeatureVideoCard({ title, kicker, paragraphs, videoSrc }: FeatureVideoCardProps) {
+export function FeatureVideoCard({
+  title,
+  kicker,
+  paragraphs,
+  videoSrc,
+  videoFit = "cover",
+}: FeatureVideoCardProps) {
+  const contentParagraphs = paragraphs ?? [];
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -40,11 +48,13 @@ export function FeatureVideoCard({ title, kicker, paragraphs, videoSrc }: Featur
             {title}
           </h1>
 
-          <div className="mt-5 space-y-4 text-left text-[0.98rem] leading-7 text-neutral-700 dark:text-neutral-300">
-            {paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          {contentParagraphs.length > 0 ? (
+            <div className="mt-5 space-y-4 text-left text-[0.98rem] leading-7 text-neutral-700 dark:text-neutral-300">
+              {contentParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-7 flex flex-wrap gap-3">
             <button
@@ -70,10 +80,20 @@ export function FeatureVideoCard({ title, kicker, paragraphs, videoSrc }: Featur
           </div>
         </section>
 
-        <section className="relative min-h-72 overflow-hidden bg-neutral-950 md:min-h-full">
+        <section
+          className={
+            videoFit === "cover"
+              ? "relative min-h-72 overflow-hidden bg-neutral-950 md:min-h-full"
+              : "relative aspect-video w-full self-start overflow-hidden bg-neutral-950"
+          }
+        >
           <video
             autoPlay
-            className="h-full min-h-72 w-full object-cover md:absolute md:inset-0"
+            className={
+              videoFit === "cover"
+                ? "h-full min-h-72 w-full object-cover md:absolute md:inset-0"
+                : "block h-full w-full object-contain"
+            }
             loop={false}
             muted={false}
             onEnded={() => setIsPlaying(false)}
