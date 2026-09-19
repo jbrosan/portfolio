@@ -1,25 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { FeatureVideoCard } from "../components/feature-video-card";
+import { PortfolioHeader } from "../components/portfolio-header";
+
+const introParagraphs = [
+  "I am a seasoned executive with over 15 years of leadership experience, driving transformative change across industries such as manufacturing, oil and gas, real estate, retail, and the military.",
+  "Renowned for my visionary approach, I excel in overseeing fiscal responsibilities, optimizing operations, and spearheading strategic initiatives that empower both startups and established organizations to achieve scalable, sustainable growth.",
+  "As a trusted advisor to boards and C-suite leaders, I craft strategic plans and governance frameworks aligned with organizational objectives, while fostering innovative, collaborative cultures that enhance operational success.",
+] as const;
+
 export const Route = createFileRoute("/")({
-  component: Home,
+  component: HomePage,
 });
 
-function Home() {
+function HomePage() {
   return (
-    <main className="min-h-svh bg-background text-foreground">
-      <section className="mx-auto flex min-h-svh max-w-5xl items-center px-6 py-16">
-        <div className="space-y-5">
-          <p className="text-sm font-medium uppercase tracking-[0.25em] text-neutral-500">
-            Dale Waugh
-          </p>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
-            Portfolio rewrite baseline
-          </h1>
-          <p className="max-w-2xl text-lg leading-8 text-neutral-600">
-            TanStack Start is running on Bun. The original portfolio functionality will be restored
-            and completed slice by slice from this clean baseline.
-          </p>
-        </div>
+    <main className="min-h-svh bg-neutral-50 px-4 pb-10 pt-24 text-neutral-950 transition-colors dark:bg-neutral-950 dark:text-white sm:px-6 sm:pt-28">
+      <PortfolioHeader mode="public" />
+
+      <section className="mx-auto max-w-6xl py-10">
+        <FeatureVideoCard
+          kicker="Dale Waugh"
+          paragraphs={introParagraphs}
+          title="Introduction"
+          videoSrc="/videos/dale-waugh-intro.webm"
+        />
       </section>
     </main>
   );

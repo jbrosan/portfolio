@@ -27,11 +27,23 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(() => {
+              try {
+                const stored = localStorage.getItem("portfolio:color-mode");
+                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                const dark = stored ? stored === "dark" : prefersDark;
+                document.documentElement.classList.toggle("dark", dark);
+              } catch {}
+            })();`,
+          }}
+        />
         {children}
         {import.meta.env.DEV ? (
           <TanStackDevtools

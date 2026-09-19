@@ -47,3 +47,44 @@ body {
     transition-duration: 0.01ms;
   }
 }
+
+:root {
+  --circle-x: 50%;
+  --circle-y: 50%;
+  --circle-radius: 0px;
+  view-transition-name: root;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  z-index: 2147483645;
+}
+
+::view-transition-new(root) {
+  animation: portfolio-circle-wipe 0.5s ease-out forwards;
+}
+
+@keyframes portfolio-circle-wipe {
+  from {
+    clip-path: circle(0 at var(--circle-x) var(--circle-y));
+  }
+
+  to {
+    clip-path: circle(var(--circle-radius) at var(--circle-x) var(--circle-y));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
