@@ -15,6 +15,14 @@ import {
 import { auditColumns, immutableAuditColumns } from "./audit";
 import { user } from "./auth";
 
+export type ContentJson =
+  | null
+  | boolean
+  | number
+  | string
+  | ContentJson[]
+  | { [key: string]: ContentJson };
+
 export const contentVisibility = pgEnum("content_visibility", ["public", "protected"]);
 
 export const contentPage = pgTable(
@@ -43,7 +51,7 @@ export const contentPageRevision = pgTable(
         onUpdate: "cascade",
       }),
     versionNumber: integer("version_number").notNull(),
-    contentJson: jsonb("content_json").notNull(),
+    contentJson: jsonb("content_json").$type<ContentJson>().notNull(),
     changeNote: text("change_note"),
     ...immutableAuditColumns,
   },
